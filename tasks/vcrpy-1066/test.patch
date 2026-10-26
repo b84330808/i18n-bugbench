@@ -1,0 +1,47 @@
+diff --git a/tests/integration/test_filter.py b/tests/integration/test_filter.py
+index c2a0a23..6507ea3 100644
+--- a/tests/integration/test_filter.py
++++ b/tests/integration/test_filter.py
+@@ -71,6 +71,16 @@ def test_filter_post_data(tmpdir, httpbin):
+         assert b"id=secret" not in cass.requests[0].body
+ 
+ 
++def test_filter_post_data_with_encoded_name(tmpdir, httpbin):
++    url = httpbin.url + "/post"
++    data = urlencode({"api:key": "secret", "foo": "bar"}).encode("utf-8")
++    cass_file = str(tmpdir.join("filter_pd_encoded_name.yaml"))
++    with vcr.use_cassette(cass_file, filter_post_data_parameters=["api:key"]):
++        urlopen(url, data)
++    with vcr.use_cassette(cass_file, filter_post_data_parameters=["api:key"]) as cass:
++        assert cass.requests[0].body == b"foo=bar"
++
++
+ def test_filter_json_post_data(tmpdir, httpbin):
+     data = json.dumps({"id": "secret", "foo": "bar"}).encode("utf-8")
+     request = Request(httpbin.url + "/post", data=data)
+diff --git a/tests/unit/test_filters.py b/tests/unit/test_filters.py
+index 8849e73..1d9ddbc 100644
+--- a/tests/unit/test_filters.py
++++ b/tests/unit/test_filters.py
+@@ -154,6 +154,21 @@ def test_replace_post_data_parameters_empty_body():
+     assert request.body is None
+ 
+ 
++def test_replace_post_data_parameters_with_encoded_names():
++    # The urlencoded form of {"api:key": "secret", "clé": "secret", "user name": "bob", "foo": "bar"}
++    body = b"api%3Akey=secret&cl%C3%A9=secret&user+name=bob&foo=bar"
++    request = Request("POST", "http://google.com", body, {})
++    replace_post_data_parameters(request, [("api:key", None), ("clé", None), ("user name", "alice")])
++    assert request.body == b"user+name=alice&foo=bar"
++
++
++def test_replace_post_data_parameters_with_already_encoded_names():
++    body = b"api%3Akey=secret&foo=bar"
++    request = Request("POST", "http://google.com", body, {})
++    replace_post_data_parameters(request, [("api%3Akey", None)])
++    assert request.body == b"foo=bar"
++
++
+ def test_remove_post_data_parameters():
+     # Test the backward-compatible API wrapper.
+     body = b"id=secret&foo=bar"

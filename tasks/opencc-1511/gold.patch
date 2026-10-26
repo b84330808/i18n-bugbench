@@ -1,0 +1,60 @@
+diff --git a/data/dictionary/TWPhrases.txt b/data/dictionary/TWPhrases.txt
+index 6579e0358..0f9d32b02 100644
+--- a/data/dictionary/TWPhrases.txt
++++ b/data/dictionary/TWPhrases.txt
+@@ -192,6 +192,7 @@ U盤	隨身碟
+ 圖雷特綜合徵	妥瑞氏症 妥瑞症
+ 土庫曼斯坦	土庫曼
+ 在線	線上
++在線社區	線上社群
+ 圭亞那	蓋亞那
+ 地址	地址 位址
+ 地址欄	位址列
+@@ -541,7 +542,7 @@ U盤	隨身碟
+ 碼率	位元速率
+ 磁盤	磁碟
+ 磁道	磁軌
+-社區	社群 社區
++社區	社區 社群
+ 禁用	停用
+ 福雷	佛瑞
+ 科恩兄弟	柯恩兄弟
+@@ -592,6 +593,7 @@ U盤	隨身碟
+ 網卡	網絡卡
+ 網吧	網咖
+ 網絡	網路
++網絡社區	網路社群
+ 網關	閘道器
+ 線程	執行緒
+ 編程	程式設計
+@@ -762,6 +764,7 @@ U盤	隨身碟
+ 閃存	快閃記憶體
+ 開市客	好市多
+ 開市客公司	好市多公司
++開源社區	開源社群
+ 關係數據庫	關聯式資料庫
+ 阻滯劑	阻斷劑
+ 阿司匹林	阿斯匹靈
+diff --git a/data/dictionary/TWPhrasesRev.txt b/data/dictionary/TWPhrasesRev.txt
+index 172695b99..77b7e7ea4 100644
+--- a/data/dictionary/TWPhrasesRev.txt
++++ b/data/dictionary/TWPhrasesRev.txt
+@@ -558,8 +558,10 @@ SQL隱碼攻擊	SQL注入 SQL注入攻擊
+ 網絡卡	網卡
+ 網路	網絡
+ 網路上的芳鄰	網上鄰居
++網路社群	網絡社區
+ 網際網路	互聯網 互聯網絡
+ 線上	在線
++線上社群	在線社區
+ 縮圖	縮略圖
+ 縮排	縮進
+ 繫結	綁定
+@@ -752,6 +754,7 @@ SQL隱碼攻擊	SQL注入 SQL注入攻擊
+ 鎦	鑥
+ 鑀	鎄
+ 開啟	打開
++開源社群	開源社區
+ 閘流體	晶閘管
+ 閘道器	網關
+ 閘電路	門電路

@@ -1,0 +1,33 @@
+[
+  {
+    "date": "2026-10-26",
+    "environment": {
+      "platform": "windows",
+      "os": "Windows 11 (build 26200)",
+      "locale_encoding": "cp932",
+      "tz": "Tokyo Standard Time",
+      "tools": {
+        "python": "Python 3.11.9",
+        "node": "v24.15.0",
+        "cargo": null,
+        "go": null,
+        "git": "git version 2.51.2.windows.1"
+      }
+    },
+    "ok": false,
+    "reason": "regression tests fail at base; gold patch should pass, got unresolved",
+    "base": {
+      "status": "unresolved",
+      "test_exit": 1,
+      "regression_exit": 1,
+      "duration_sec": 122.7
+    },
+    "gold": {
+      "status": "unresolved",
+      "test_exit": 1,
+      "regression_exit": 1,
+      "duration_sec": 19.4
+    },
+    "note": "Added by hand after reading the logs: purgecss's Jest config finds no tests on Windows (testMatch is built with backslashes, transformIgnorePatterns assume '/'), so the test commands fail in both runs before any test executes. Needs validation on Linux or macOS."
+  }
+]

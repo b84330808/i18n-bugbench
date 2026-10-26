@@ -1,0 +1,30 @@
+{
+  "id": "edge-tts-506",
+  "title": "Text without spaces is split into chunks larger than byte_length",
+  "repo": "https://github.com/rany2/edge-tts",
+  "upstream_pr": "https://github.com/rany2/edge-tts/pull/506",
+  "upstream_status": "open",
+  "base_commit": "bd44c1d1aaebdc1db7f47456ee12431b42ec7cac",
+  "language": "python",
+  "category": "multibyte-text",
+  "license": "LGPL-3.0",
+  "environment": {
+    "reproduces_on": ["any"],
+    "locale": null,
+    "tz": null,
+    "toolchain": {"python": ">=3.8"}
+  },
+  "python_venv": true,
+  "setup": [
+    ["{python}", "-m", "pip", "install", "-q", "--disable-pip-version-check", "-e", ".", "pytest"]
+  ],
+  "test_command": ["{python}", "-m", "pytest", "-q", "-p", "no:cacheprovider", "tests/test_bugbench_split_text.py"],
+  "hidden_tests": {
+    "source": "benchmark",
+    "tests": ["tests/test_bugbench_split_text.py"],
+    "notes": "The upstream PR has no test. These tests check the documented contract of split_text_by_byte_length; they are not part of the upstream repository."
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 900
+}

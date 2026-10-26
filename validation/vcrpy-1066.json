@@ -1,0 +1,32 @@
+[
+  {
+    "date": "2026-10-26",
+    "environment": {
+      "platform": "windows",
+      "os": "Windows 11 (build 26200)",
+      "locale_encoding": "cp932",
+      "tz": "Tokyo Standard Time",
+      "tools": {
+        "python": "Python 3.11.9",
+        "node": "v24.15.0",
+        "cargo": null,
+        "go": null,
+        "git": "git version 2.51.2.windows.1"
+      }
+    },
+    "ok": true,
+    "reason": "base fails, gold passes",
+    "base": {
+      "status": "unresolved",
+      "test_exit": 1,
+      "regression_exit": 0,
+      "duration_sec": 20.6
+    },
+    "gold": {
+      "status": "resolved",
+      "test_exit": 0,
+      "regression_exit": 0,
+      "duration_sec": 16.2
+    }
+  }
+]

@@ -1,0 +1,49 @@
+# Validates tasks on a hosted runner: the hidden tests must fail at the base
+# commit and pass with the reference fix. Run it by hand; it installs each
+# task's dependencies, so it takes a while. The new validation records are
+# uploaded as an artifact to be reviewed and committed.
+name: validate
+
+on:
+  workflow_dispatch:
+    inputs:
+      tasks:
+        description: Task ids, separated by spaces
+        required: true
+      os:
+        description: Runner
+        type: choice
+        options: [ubuntu-latest, windows-latest, macos-latest]
+        default: ubuntu-latest
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: false
+      - name: Validate
+        shell: bash
+        env:
+          TASKS: ${{ inputs.tasks }}
+        run: python -m bugbench validate -v $TASKS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-${{ inputs.os }}
+          include-hidden-files: true
+          path: |
+            validation/
+            .work/logs/

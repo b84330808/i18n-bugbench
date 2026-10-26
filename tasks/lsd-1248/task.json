@@ -1,0 +1,51 @@
+{
+  "id": "lsd-1248",
+  "title": "Files with a path longer than MAX_PATH are hidden on Windows",
+  "repo": "https://github.com/lsd-rs/lsd",
+  "upstream_pr": "https://github.com/lsd-rs/lsd/pull/1248",
+  "upstream_status": "open",
+  "base_commit": "4b6c14a110fe0fd544ec0204501b5fd3a5d6218f",
+  "language": "rust",
+  "category": "windows-path",
+  "license": "Apache-2.0",
+  "environment": {
+    "reproduces_on": [
+      "windows"
+    ],
+    "locale": null,
+    "tz": null,
+    "toolchain": {
+      "rust": ">=1.85"
+    },
+    "notes": "The hidden test is #[cfg(windows)]; it compiles to nothing on other platforms. test_dereference_link_broken_link_output is skipped in the regression run: creating a symlink needs Developer Mode or admin rights on Windows."
+  },
+  "test_command": [
+    "cargo",
+    "test",
+    "--quiet",
+    "--test",
+    "integration",
+    "test_list_file_with_path_longer_than_max_path"
+  ],
+  "regression_command": [
+    "cargo",
+    "test",
+    "--quiet",
+    "--test",
+    "integration",
+    "--",
+    "--skip",
+    "test_list_file_with_path_longer_than_max_path",
+    "--skip",
+    "test_dereference_link_broken_link_output"
+  ],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": [
+      "tests/integration.rs:test_list_file_with_path_longer_than_max_path"
+    ]
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 2400
+}

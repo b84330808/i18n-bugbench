@@ -1,0 +1,27 @@
+{
+  "id": "glamour-651",
+  "title": "CRLF code blocks render blank without a chroma theme",
+  "repo": "https://github.com/charmbracelet/glamour",
+  "upstream_pr": "https://github.com/charmbracelet/glamour/pull/651",
+  "upstream_status": "open",
+  "base_commit": "010543cac1a07c9bfd9969e58d683f2ddef4c8f7",
+  "language": "go",
+  "category": "line-endings",
+  "license": "MIT",
+  "environment": {
+    "reproduces_on": ["any"],
+    "locale": null,
+    "tz": null,
+    "toolchain": {"go": "version in go.mod"}
+  },
+  "setup": [["go", "mod", "download"]],
+  "test_command": ["go", "test", "-count=1", "-run", "^TestCodeBlockCRLF$", "."],
+  "regression_command": ["go", "test", "-count=1", "-skip", "^TestCodeBlockCRLF$", "."],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": ["glamour_test.go:TestCodeBlockCRLF"]
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 1200
+}

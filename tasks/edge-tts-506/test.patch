@@ -1,0 +1,46 @@
+diff --git a/tests/test_bugbench_split_text.py b/tests/test_bugbench_split_text.py
+new file mode 100644
+index 0000000..256a8ea
+--- /dev/null
++++ b/tests/test_bugbench_split_text.py
+@@ -0,0 +1,40 @@
++# Hidden test written for i18n-bugbench (MIT). It checks the contract in the
++# docstring of split_text_by_byte_length for text without spaces.
++import pytest
++
++from edge_tts.communicate import split_text_by_byte_length
++
++
++def _check(text: str, byte_length: int) -> list:
++    chunks = list(split_text_by_byte_length(text, byte_length))
++    for chunk in chunks:
++        assert len(chunk) <= byte_length, (len(chunk), byte_length)
++        chunk.decode("utf-8")
++    assert b"".join(chunks) == text.encode("utf-8")
++    return chunks
++
++
++def test_chinese_without_spaces_stays_within_byte_length():
++    chunks = _check("這是一段沒有空白的中文句子，" * 500, 4096)
++    assert len(chunks) > 1
++
++
++def test_japanese_without_spaces_stays_within_byte_length():
++    _check("吾輩は猫である。名前はまだ無い。" * 300, 1000)
++
++
++def test_mixed_scripts_and_entities():
++    _check(("日本語テキスト&amp;中文文本" * 200), 100)
++
++
++def test_byte_length_smaller_than_one_character():
++    # A 3-byte character cannot fit into 2 bytes: the docstring promises a
++    # ValueError rather than an oversized chunk or a dropped byte.
++    with pytest.raises(ValueError):
++        list(split_text_by_byte_length("中文", 2))
++
++
++def test_ascii_text_still_splits_at_spaces():
++    chunks = list(split_text_by_byte_length("hello world " * 100, 50))
++    assert all(len(c) <= 50 for c in chunks)
++    assert all(not c.startswith(b" ") and not c.endswith(b" ") for c in chunks)

@@ -1,0 +1,68 @@
+{
+  "id": "vcrpy-1066",
+  "title": "filter_post_data_parameters misses urlencoded parameter names",
+  "repo": "https://github.com/kevin1024/vcrpy",
+  "upstream_pr": "https://github.com/kevin1024/vcrpy/pull/1066",
+  "upstream_status": "merged",
+  "merge_commit": "25fa4e2e14bec66f1a27e90496d40d02dc5287d4",
+  "base_commit": "13904ec42934d610d05fd6af9a0f44a58934d71d",
+  "language": "python",
+  "category": "url-encoding",
+  "license": "MIT",
+  "environment": {
+    "reproduces_on": [
+      "any"
+    ],
+    "locale": null,
+    "tz": null,
+    "toolchain": {
+      "python": ">=3.10"
+    },
+    "notes": "Only the unit tests run; the integration test in the PR needs pytest-httpbin."
+  },
+  "python_venv": true,
+  "setup": [
+    [
+      "{python}",
+      "-m",
+      "pip",
+      "install",
+      "-q",
+      "--disable-pip-version-check",
+      "-e",
+      ".",
+      "pytest",
+      "pytest-asyncio"
+    ]
+  ],
+  "test_command": [
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/unit/test_filters.py::test_replace_post_data_parameters_with_encoded_names"
+  ],
+  "regression_command": [
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/unit/test_filters.py",
+    "--deselect",
+    "tests/unit/test_filters.py::test_replace_post_data_parameters_with_encoded_names"
+  ],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": [
+      "tests/unit/test_filters.py::test_replace_post_data_parameters_with_encoded_names"
+    ],
+    "notes": "test_replace_post_data_parameters_with_already_encoded_names passes at the base commit and runs as a regression test."
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 900
+}

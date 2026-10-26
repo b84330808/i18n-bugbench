@@ -1,0 +1,90 @@
+{
+  "id": "pdfkit-1828",
+  "title": "CommonJS bundle of the Node build throws on load on Windows",
+  "repo": "https://github.com/foliojs/pdfkit",
+  "upstream_pr": "https://github.com/foliojs/pdfkit/pull/1828",
+  "upstream_status": "merged",
+  "merge_commit": "9de53ec021b6a7b959e21be189660ebb30f41f0c",
+  "base_commit": "7e6145b3e7a99b00354a83c779464b4fc8cca2ac",
+  "language": "javascript",
+  "category": "windows-path",
+  "license": "MIT",
+  "environment": {
+    "reproduces_on": [
+      "windows"
+    ],
+    "locale": null,
+    "tz": null,
+    "toolchain": {
+      "node": ">=20",
+      "yarn": "4 (yarnPath in .yarnrc.yml, run through corepack)"
+    },
+    "notes": "On Linux and macOS 'file:///' is a valid absolute file URL, so the bundle loads at the base commit."
+  },
+  "env": {
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
+    "COREPACK_INTEGRITY_KEYS": "0",
+    "CI": "1"
+  },
+  "setup": [
+    [
+      "corepack",
+      "yarn",
+      "install",
+      "--immutable"
+    ],
+    [
+      "corepack",
+      "yarn",
+      "build"
+    ],
+    [
+      "npm",
+      "install",
+      "--prefix",
+      ".bbtools",
+      "--no-save",
+      "--no-audit",
+      "--no-fund",
+      "--loglevel=error",
+      "esbuild@0.25.10"
+    ]
+  ],
+  "test_command": [
+    [
+      "node",
+      "{task_dir}/check_cjs_bundle.mjs",
+      "{workdir}"
+    ],
+    [
+      "corepack",
+      "yarn",
+      "vitest",
+      "run",
+      "tests/unit/bundling.spec.js"
+    ]
+  ],
+  "regression_command": [
+    "corepack",
+    "yarn",
+    "vitest",
+    "run",
+    "tests/unit",
+    "--exclude",
+    "tests/unit/bundling.spec.js"
+  ],
+  "hidden_tests": {
+    "source": "benchmark",
+    "tests": [
+      "check_cjs_bundle.mjs",
+      "tests/unit/bundling.spec.js (already upstream; its 'as CommonJS' case fails on Windows at the base commit)"
+    ],
+    "support_files": [
+      "check_cjs_bundle.mjs"
+    ],
+    "notes": "The upstream PR has no test; its description gives an esbuild reproduction, which this script automates. esbuild 0.25.10 is installed into .bbtools for the check; the repository doesn't depend on it."
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": null,
+  "timeout_sec": 2400
+}

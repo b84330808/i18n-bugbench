@@ -1,0 +1,98 @@
+{
+  "id": "dash-4074",
+  "title": "Pages router matches the percent-encoded pathname",
+  "repo": "https://github.com/plotly/dash",
+  "upstream_pr": "https://github.com/plotly/dash/pull/4074",
+  "upstream_status": "open",
+  "base_commit": "a553a1061da0a3fc1b765f0cbceaa0dbfbaf30e0",
+  "language": "python",
+  "category": "url-encoding",
+  "license": "MIT",
+  "environment": {
+    "reproduces_on": [
+      "any"
+    ],
+    "locale": null,
+    "tz": null,
+    "toolchain": {
+      "python": ">=3.9"
+    },
+    "notes": "No npm build: the component packages and front-end bundles, which are git-ignored in the checkout, are extracted from the dash 4.4.1 wheel by tools/dash_overlay.py; the base commit is 4.5.0rc2. The router logic under test is pure Python. The regression run leaves out test_path_to_module_name, test_import_layouts_from_pages and test_pages_folder_config: some of their cases fail on Windows at the base commit and with the fix (they build module names and folders with '/')."
+  },
+  "python_venv": true,
+  "setup": [
+    [
+      "{python}",
+      "-m",
+      "pip",
+      "install",
+      "-q",
+      "--disable-pip-version-check",
+      "pytest",
+      "mock",
+      "asgiref",
+      "-r",
+      "requirements/install.txt"
+    ],
+    [
+      "{python}",
+      "-m",
+      "pip",
+      "download",
+      "-q",
+      "--disable-pip-version-check",
+      "--no-deps",
+      "dash==4.4.1",
+      "-d",
+      ".bbtools"
+    ],
+    [
+      "{python}",
+      "{bench}/tools/dash_overlay.py",
+      "{workdir}",
+      ".bbtools"
+    ],
+    [
+      "{python}",
+      "-m",
+      "pip",
+      "install",
+      "-q",
+      "--disable-pip-version-check",
+      "--no-deps",
+      "-e",
+      "."
+    ]
+  ],
+  "test_command": [
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/unit/pages/test_pages.py::test_router_decodes_pathname"
+  ],
+  "regression_command": [
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/unit/pages/",
+    "--deselect",
+    "tests/unit/pages/test_pages.py::test_router_decodes_pathname",
+    "-k",
+    "not test_path_to_module_name and not test_import_layouts_from_pages and not test_pages_folder_config"
+  ],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": [
+      "tests/unit/pages/test_pages.py::test_router_decodes_pathname"
+    ]
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 1800
+}

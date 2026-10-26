@@ -1,0 +1,29 @@
+{
+  "id": "chrono-682",
+  "title": "zh.hant parser cuts off three-character Chinese numeral days",
+  "repo": "https://github.com/wanasit/chrono",
+  "upstream_pr": "https://github.com/wanasit/chrono/pull/682",
+  "upstream_status": "open",
+  "base_commit": "d4fe7e39015c818b271d74789fb96f74777421d0",
+  "language": "typescript",
+  "category": "cjk-parsing",
+  "license": "MIT",
+  "environment": {
+    "reproduces_on": ["any"],
+    "locale": null,
+    "tz": null,
+    "toolchain": {"node": ">=16"},
+    "notes": "The upstream tests build local Date objects; they are not tied to a time zone."
+  },
+  "env": {"CI": "1"},
+  "setup": [["npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund"]],
+  "test_command": ["npx", "jest", "--coverage=false", "test/zh/hant/zh_hant_date.test.ts", "-t", "three-character Chinese numeral day"],
+  "regression_command": ["npx", "jest", "--coverage=false", "test/zh/hant/", "-t", "^(?!.*three-character Chinese numeral day)"],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": ["test/zh/hant/zh_hant_date.test.ts: Test - Date expression with a three-character Chinese numeral day"]
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 1200
+}

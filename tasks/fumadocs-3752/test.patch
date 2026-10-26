@@ -1,0 +1,64 @@
+diff --git a/packages/asyncapi/test/index.test.ts b/packages/asyncapi/test/index.test.ts
+index 81b30bf75..126e8cdf0 100644
+--- a/packages/asyncapi/test/index.test.ts
++++ b/packages/asyncapi/test/index.test.ts
+@@ -180,6 +180,26 @@ describe('Generate AsyncAPI documents', () => {
+     );
+   });
+ 
++  test('Streetlights (with index resolved against content directory)', async () => {
++    const out = await generateFilesOnly({
++      input: createAsyncAPI({
++        input: {
++          streetlights: path.join(cwd, './fixtures/streetlights.yaml'),
++        },
++      }),
++      output: './content/docs/events',
++      per: 'operation',
++      index: {
++        url: { baseUrl: '/docs', contentDir: './content/docs' },
++        items: [{ path: 'index' }],
++      },
++    });
++
++    const index = out.find((file) => file.path === 'index.mdx')?.content;
++    expect(index).toContain('<Card href="/docs/events/receiveLightMeasurement" ');
++    expect(index).toContain('<Card href="/docs/events/sendLightMeasurement" ');
++  });
++
+   test('throws error when no input files found', async () => {
+     await expect(
+       generateFilesOnly({
+diff --git a/packages/openapi/test/index.test.ts b/packages/openapi/test/index.test.ts
+index 2a56dc37f..d2d01ce33 100644
+--- a/packages/openapi/test/index.test.ts
++++ b/packages/openapi/test/index.test.ts
+@@ -245,6 +245,28 @@ describe('Generate documents', () => {
+     expect(index).toContain('<Card href="/docs/unknown" ');
+   });
+ 
++  test('Generate Files - with index resolved against content directory', async () => {
++    vi.spyOn(console, 'warn').mockImplementation(() => {});
++    const out = await generateFilesOnly({
++      input: createOpenAPI({
++        input: {
++          store: path.join(cwd, './fixtures/tag-hierarchy.yaml'),
++        },
++      }),
++      output: './content/docs/api',
++      per: 'tag',
++      index: {
++        url: { baseUrl: '/docs', contentDir: './content/docs' },
++        items: [{ path: 'index' }],
++      },
++    });
++
++    const index = out.find((file) => file.path === 'index.mdx')?.content;
++    expect(index).toContain('<Card href="/docs/api/store/products" ');
++    expect(index).toContain('<Card href="/docs/api/store/inventory" ');
++    expect(index).toContain('<Card href="/docs/api/unknown" ');
++  });
++
+   test('Generate Files - with meta', async () => {
+     const out = await generateFilesOnly({
+       input: createOpenAPI({

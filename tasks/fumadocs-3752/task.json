@@ -1,0 +1,99 @@
+{
+  "id": "fumadocs-3752",
+  "title": "API index card links break with contentDir and on Windows",
+  "repo": "https://github.com/fuma-nama/fumadocs",
+  "upstream_pr": "https://github.com/fuma-nama/fumadocs/pull/3752",
+  "upstream_status": "merged",
+  "merge_commit": "2af7b68b029766019ff4229d9ea6f40babc1e430",
+  "base_commit": "5bf81347b413b99503337570dbbaa3f0894d79af",
+  "language": "typescript",
+  "category": "windows-path",
+  "license": "MIT",
+  "environment": {
+    "reproduces_on": [
+      "any"
+    ],
+    "locale": null,
+    "tz": null,
+    "toolchain": {
+      "node": ">=24.14",
+      "pnpm": "12.14.0, installed with npm into .bbtools (corepack 0.34 cannot run pnpm 12.14)"
+    },
+    "notes": "Two bugs in one place: links are resolved against the wrong directory (every OS), and path.relative() returns backslashes on Windows. Only the two new tests run: on Windows other tests in the same files fail even with the fix (other generated paths keep backslashes), so there is no regression command."
+  },
+  "env": {
+    "CI": "1",
+    "TURBO_TELEMETRY_DISABLED": "1",
+    "PATH": "{workdir}/.bbtools/node_modules/.bin{pathsep}{env:PATH}"
+  },
+  "setup": [
+    [
+      "npm",
+      "install",
+      "--prefix",
+      ".bbtools",
+      "--no-save",
+      "--no-audit",
+      "--no-fund",
+      "--loglevel=error",
+      "pnpm@12.14.0"
+    ],
+    [
+      "pnpm",
+      "install",
+      "--frozen-lockfile",
+      "--filter",
+      ".",
+      "--filter",
+      "./packages/shared",
+      "--filter",
+      "fumadocs-openapi...",
+      "--filter",
+      "@fumadocs/asyncapi..."
+    ],
+    [
+      "pnpm",
+      "--filter",
+      "fumadocs-openapi^...",
+      "--filter",
+      "@fumadocs/asyncapi^...",
+      "run",
+      "build"
+    ]
+  ],
+  "test_command": [
+    [
+      "pnpm",
+      "--dir",
+      "packages/openapi",
+      "exec",
+      "vitest",
+      "run",
+      "test/index.test.ts",
+      "-t",
+      "index resolved against content directory"
+    ],
+    [
+      "pnpm",
+      "--dir",
+      "packages/asyncapi",
+      "exec",
+      "vitest",
+      "run",
+      "test/index.test.ts",
+      "-t",
+      "index resolved against content directory"
+    ]
+  ],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": [
+      "packages/openapi/test/index.test.ts: Generate Files - with index resolved against content directory",
+      "packages/asyncapi/test/index.test.ts: Streetlights (with index resolved against content directory)"
+    ],
+    "notes": "Each test file runs filtered to its new test (-t)."
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 3600
+}

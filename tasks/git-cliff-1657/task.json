@@ -1,0 +1,30 @@
+{
+  "id": "git-cliff-1657",
+  "title": "--workdir does not scope the changelog on Windows",
+  "repo": "https://github.com/orhun/git-cliff",
+  "upstream_pr": "https://github.com/orhun/git-cliff/pull/1657",
+  "upstream_status": "merged",
+  "merge_commit": "82ba45e855571fb2f66ccd2f7c55c131c50f0fc6",
+  "base_commit": "60e0be97e945f71148172675be82399d382c9677",
+  "language": "rust",
+  "category": "windows-path",
+  "license": "Apache-2.0 OR MIT",
+  "environment": {
+    "reproduces_on": ["windows"],
+    "locale": null,
+    "tz": null,
+    "toolchain": {"rust": ">=1.88", "git": "any"},
+    "notes": "On Linux and macOS fs::canonicalize returns a plain path and the separator is '/', so the check passes at the base commit."
+  },
+  "setup": [["cargo", "build", "--quiet", "--bin", "git-cliff"]],
+  "test_command": ["{python}", "{task_dir}/check_workdir.py", "{workdir}"],
+  "hidden_tests": {
+    "source": "benchmark",
+    "tests": ["check_workdir.py"],
+    "support_files": ["check_workdir.py"],
+    "notes": "The upstream PR's unit tests call a helper the PR introduces (workdir_include_pattern), so they would leak the fix's shape. This black-box check runs the built binary on a throwaway repository instead."
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": null,
+  "timeout_sec": 3600
+}

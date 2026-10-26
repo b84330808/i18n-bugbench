@@ -1,0 +1,33 @@
+{
+  "id": "isort-2744",
+  "title": "known_* directory entries ending in / are ignored on Windows",
+  "repo": "https://github.com/PyCQA/isort",
+  "upstream_pr": "https://github.com/PyCQA/isort/pull/2744",
+  "upstream_status": "open",
+  "base_commit": "a514c71ed86c2216d0040c7d60e302ed76a4f7ab",
+  "language": "python",
+  "category": "windows-path",
+  "license": "MIT",
+  "environment": {
+    "reproduces_on": ["windows"],
+    "locale": null,
+    "tz": null,
+    "toolchain": {"python": ">=3.11"},
+    "notes": "On Linux and macOS os.path.sep is '/', so the hidden test passes at the base commit."
+  },
+  "python_venv": true,
+  "setup": [
+    ["{python}", "-m", "pip", "install", "-q", "--disable-pip-version-check", "-e", ".", "pytest"]
+  ],
+  "test_command": ["{python}", "-m", "pytest", "-q", "-p", "no:cacheprovider",
+    "tests/unit/test_settings.py::test_known_pattern_directory_with_forward_slash"],
+  "regression_command": ["{python}", "-m", "pytest", "-q", "-p", "no:cacheprovider", "tests/unit/test_settings.py",
+    "--deselect", "tests/unit/test_settings.py::test_known_pattern_directory_with_forward_slash"],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": ["tests/unit/test_settings.py::test_known_pattern_directory_with_forward_slash"]
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 900
+}

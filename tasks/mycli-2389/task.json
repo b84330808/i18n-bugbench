@@ -1,0 +1,74 @@
+{
+  "id": "mycli-2389",
+  "title": "Default myclirc read and written with the locale encoding",
+  "repo": "https://github.com/dbcli/mycli",
+  "upstream_pr": "https://github.com/dbcli/mycli/pull/2389",
+  "upstream_status": "merged",
+  "merge_commit": "cb14efcdc5d72ba0a2815d6f3fb410d3e4a1058e",
+  "base_commit": "8145990aebf8446de7f4c2eaa78a1fdcfc5604ef",
+  "language": "python",
+  "category": "locale-encoding",
+  "license": "BSD-3-Clause",
+  "environment": {
+    "reproduces_on": [
+      "any"
+    ],
+    "locale": "The crash needs a non-UTF-8 locale (Windows cp932/cp936/cp949/cp950); the hidden test detects locale-encoding use on any platform through EncodingWarning.",
+    "tz": null,
+    "toolchain": {
+      "python": ">=3.10"
+    },
+    "notes": "Python UTF-8 mode (PYTHONUTF8=1) hides the crash but not the EncodingWarning."
+  },
+  "python_venv": true,
+  "env": {
+    "PYTHONUTF8": "0"
+  },
+  "setup": [
+    [
+      "{python}",
+      "-m",
+      "pip",
+      "install",
+      "-q",
+      "--disable-pip-version-check",
+      "-e",
+      ".",
+      "pytest",
+      "pytest-random-order"
+    ]
+  ],
+  "test_command": [
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "mycli_test/pytests/test_config.py::test_default_config_does_not_use_locale_encoding",
+    "mycli_test/pytests/test_config.py::test_create_and_write_default_config"
+  ],
+  "regression_command": [
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "mycli_test/pytests/test_config.py",
+    "--deselect",
+    "mycli_test/pytests/test_config.py::test_default_config_does_not_use_locale_encoding",
+    "--deselect",
+    "mycli_test/pytests/test_config.py::test_create_and_write_default_config"
+  ],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": [
+      "mycli_test/pytests/test_config.py::test_default_config_does_not_use_locale_encoding"
+    ],
+    "notes": "test_create_and_write_default_config already exists upstream; it passes at the base commit under a UTF-8 locale and fails under cp932, so it runs with the hidden test."
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 900
+}

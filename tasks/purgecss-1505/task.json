@@ -1,0 +1,36 @@
+{
+  "id": "purgecss-1505",
+  "title": "--config fails for paths that are not valid URLs (Windows drive letters, #)",
+  "repo": "https://github.com/FullHuman/purgecss",
+  "upstream_pr": "https://github.com/FullHuman/purgecss/pull/1505",
+  "upstream_status": "merged",
+  "merge_commit": "4a5d71d5ec2e79d34398447f80d9d071c2207aa9",
+  "base_commit": "af6616488f386ecb90d33af18eaee19967035e1b",
+  "language": "typescript",
+  "category": "windows-path",
+  "license": "MIT",
+  "environment": {
+    "reproduces_on": ["any"],
+    "locale": null,
+    "tz": null,
+    "toolchain": {"node": ">=20", "pnpm": "via corepack (packageManager field)"},
+    "notes": "Every --config call fails on Windows. The hidden test puts the config in a folder named 'c#', which also fails on Linux and macOS, so it reproduces everywhere."
+  },
+  "env": {"COREPACK_ENABLE_DOWNLOAD_PROMPT": "0", "COREPACK_INTEGRITY_KEYS": "0", "CI": "1"},
+  "setup": [
+    ["corepack", "pnpm", "install", "--frozen-lockfile"],
+    ["corepack", "pnpm", "--filter", "purgecss", "run", "build"]
+  ],
+  "test_command": ["corepack", "pnpm", "--dir", "packages/purgecss", "exec", "jest",
+    "__tests__/cli/cli-config-file.test.ts", "-t", "built CLI"],
+  "regression_command": ["corepack", "pnpm", "--dir", "packages/purgecss", "exec", "jest",
+    "__tests__/cli/cli-config-file.test.ts", "-t", "^(?!.*built CLI)"],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": ["packages/purgecss/__tests__/cli/cli-config-file.test.ts: built CLI"],
+    "notes": "The test runs the built CLI (bin/purgecss.js): ts-jest compiles import() to require(), so an in-process test cannot see the bug."
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 2400
+}

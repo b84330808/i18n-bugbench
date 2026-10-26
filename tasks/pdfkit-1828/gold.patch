@@ -1,0 +1,17 @@
+diff --git a/lib/document.node.js b/lib/document.node.js
+index a212e73..9c9e8d7 100644
+--- a/lib/document.node.js
++++ b/lib/document.node.js
+@@ -13,8 +13,10 @@ import { registerFile } from '#fs';
+ // (CommonJS output) or pointing at a bundle with no `standard-fonts/` directory
+ // next to it (ESM output). Neither may fail before a document actually asks for
+ // a standard font, so the lookup falls back to a base createRequire accepts and
+-// a failed lookup explains itself.
+-const require = createRequire(import.meta.url ?? 'file:///');
++// a failed lookup explains itself. The base is the root path `/`, which is
++// absolute on every platform; the URL `file:///` has no drive letter, so
++// createRequire rejects it on Windows.
++const require = createRequire(import.meta.url ?? '/');
+ 
+ const loaders = {
+   Courier: () => require('./standard-fonts/Courier.cjs'),

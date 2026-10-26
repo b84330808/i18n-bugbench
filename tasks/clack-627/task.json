@@ -1,0 +1,74 @@
+{
+  "id": "clack-627",
+  "title": "path prompt in directory mode ignores a trailing backslash",
+  "repo": "https://github.com/bombshell-dev/clack",
+  "upstream_pr": "https://github.com/bombshell-dev/clack/pull/627",
+  "upstream_status": "open",
+  "base_commit": "1835f415776dda400cfece4365ec66380be12f71",
+  "language": "typescript",
+  "category": "windows-path",
+  "license": "MIT",
+  "environment": {
+    "reproduces_on": [
+      "any"
+    ],
+    "locale": null,
+    "tz": null,
+    "toolchain": {
+      "node": ">=20",
+      "pnpm": "via corepack (packageManager field)"
+    },
+    "notes": "The bug shows on Windows; the hidden test mocks node:path with path.win32 and node:fs with memfs, so it fails at the base commit on every OS. Setup puts corepack's pnpm shim in .bbbin so that package scripts that call pnpm find it. No regression command: the existing test/path.test.ts uses POSIX paths and fails on Windows at the base commit."
+  },
+  "env": {
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
+    "COREPACK_INTEGRITY_KEYS": "0",
+    "CI": "1",
+    "PATH": "{workdir}/.bbbin{pathsep}{env:PATH}"
+  },
+  "setup": [
+    [
+      "{python}",
+      "-c",
+      "import os; os.makedirs('.bbbin', exist_ok=True)"
+    ],
+    [
+      "corepack",
+      "enable",
+      "--install-directory",
+      ".bbbin",
+      "pnpm"
+    ],
+    [
+      "corepack",
+      "pnpm",
+      "install",
+      "--frozen-lockfile"
+    ],
+    [
+      "corepack",
+      "pnpm",
+      "run",
+      "build"
+    ]
+  ],
+  "test_command": [
+    "corepack",
+    "pnpm",
+    "--dir",
+    "packages/prompts",
+    "exec",
+    "vitest",
+    "run",
+    "test/path-win32.test.ts"
+  ],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": [
+      "packages/prompts/test/path-win32.test.ts"
+    ]
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 1800
+}

@@ -1,0 +1,71 @@
+diff --git a/src/core.rs b/src/core.rs
+index bc29105..2423f86 100644
+--- a/src/core.rs
++++ b/src/core.rs
+@@ -16,7 +16,7 @@ use crate::html::{
+     has_favicon, html_to_dom, serialize_document, set_base_url, set_charset, set_robots, walk,
+ };
+ use crate::session::Session;
+-use crate::url::{create_data_url, resolve_url};
++use crate::url::{create_data_url, is_windows_drive_path, resolve_url};
+ 
+ #[derive(Debug)]
+ pub struct MonolithError {
+@@ -167,7 +167,7 @@ pub fn create_monolithic_document_from_data(
+     } else {
+         // Custom base URL provided
+         match Url::parse(&custom_base_url) {
+-            Ok(parsed_url) => {
++            Ok(parsed_url) if !is_windows_drive_path(&custom_base_url) => {
+                 if parsed_url.scheme() == "file" {
+                     // File base URLs can only work with documents saved from filesystem
+                     if base_url.scheme() == "file" {
+@@ -177,7 +177,7 @@ pub fn create_monolithic_document_from_data(
+                     base_url = parsed_url;
+                 }
+             }
+-            Err(_) => {
++            _ => {
+                 // Failed to parse given base URL, perhaps it's a filesystem path?
+                 if base_url.scheme() == "file" {
+                     // Relative paths could work for documents saved from filesystem
+@@ -358,7 +358,7 @@ pub fn create_monolithic_document(
+ 
+     let mut target_url = match target.as_str() {
+         target_str => match Url::parse(target_str) {
+-            Ok(target_url) => match target_url.scheme() {
++            Ok(target_url) if !is_windows_drive_path(target_str) => match target_url.scheme() {
+                 "data" | "file" | "http" | "https" => target_url,
+                 unsupported_scheme => {
+                     return Err(MonolithError::new(&format!(
+@@ -367,7 +367,7 @@ pub fn create_monolithic_document(
+                     )));
+                 }
+             },
+-            Err(_) => {
++            _ => {
+                 // Failed to parse given base URL (perhaps it's a filesystem path?)
+                 let path: &Path = Path::new(&target_str);
+ 
+diff --git a/src/url.rs b/src/url.rs
+index 9265633..653a3d4 100644
+--- a/src/url.rs
++++ b/src/url.rs
+@@ -147,6 +147,17 @@ pub fn domain_is_within_domain(domain: &str, domain_to_match_against: &str) -> b
+     ok
+ }
+ 
++/// Checks if the input is an absolute Windows path (e.g. `C:\dir\page.html` or `C:/dir/page.html`),
++/// which the URL parser would otherwise take for a URL with a one-letter scheme
++pub fn is_windows_drive_path(input: &str) -> bool {
++    let bytes = input.as_bytes();
++
++    bytes.len() >= 3
++        && bytes[0].is_ascii_alphabetic()
++        && bytes[1] == b':'
++        && (bytes[2] == b'\\' || bytes[2] == b'/')
++}
++
+ pub fn is_url_and_has_protocol(input: &str) -> bool {
+     match Url::parse(input) {
+         Ok(parsed_url) => !parsed_url.scheme().is_empty(),

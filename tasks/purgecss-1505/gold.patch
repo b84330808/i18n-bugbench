@@ -1,0 +1,33 @@
+diff --git a/packages/purgecss/build.ts b/packages/purgecss/build.ts
+index 3f1676f..ab66b05 100644
+--- a/packages/purgecss/build.ts
++++ b/packages/purgecss/build.ts
+@@ -17,6 +17,7 @@ const external = [
+   "path",
+   "fs",
+   "util",
++  "url",
+ ];
+ 
+ const cliBundle: RollupOptions = {
+diff --git a/packages/purgecss/src/index.ts b/packages/purgecss/src/index.ts
+index a82b1ce..eef63ca 100644
+--- a/packages/purgecss/src/index.ts
++++ b/packages/purgecss/src/index.ts
+@@ -11,6 +11,7 @@ import * as glob from "fast-glob";
+ import * as path from "path";
+ import * as postcss from "postcss";
+ import selectorParser from "postcss-selector-parser";
++import { pathToFileURL } from "url";
+ import { promisify } from "util";
+ import {
+   CONFIG_FILENAME,
+@@ -90,7 +91,7 @@ export async function setOptions(
+   let options: Options;
+   try {
+     const t = path.resolve(process.cwd(), configFile);
+-    const importedConfig = await import(t);
++    const importedConfig = await import(pathToFileURL(t).href);
+     // Handle both ES modules (direct export) and CommonJS (default export)
+     options =
+       importedConfig.default && typeof importedConfig.default === "object"

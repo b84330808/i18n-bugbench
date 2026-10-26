@@ -1,0 +1,30 @@
+{
+  "id": "monolith-541",
+  "title": "Absolute Windows paths rejected as an unsupported URL scheme",
+  "repo": "https://github.com/Y2Z/monolith",
+  "upstream_pr": "https://github.com/Y2Z/monolith/pull/541",
+  "upstream_status": "merged",
+  "merge_commit": "0c1a768c4e003b6b6c84845c6310515c3da7cff0",
+  "base_commit": "9cebaa9b2e60ac0e850539e2d10bc67522c199a3",
+  "language": "rust",
+  "category": "windows-path",
+  "license": "CC0-1.0",
+  "environment": {
+    "reproduces_on": ["windows"],
+    "locale": null,
+    "tz": null,
+    "toolchain": {"rust": "edition 2024 (>=1.85)"},
+    "notes": "On Linux and macOS the absolute path starts with '/', which never parses as a URL, so the hidden test passes at the base commit."
+  },
+  "test_command": ["cargo", "test", "--quiet", "--test", "mod", "local_file_target_input_full_target_path"],
+  "regression_command": ["cargo", "test", "--quiet", "--test", "mod", "cli::local_files::",
+    "--", "--skip", "local_file_target_input_full_target_path"],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": ["tests/cli/local_files.rs:local_file_target_input_full_target_path"],
+    "notes": "The PR also adds unit tests for a new helper, url::is_windows_drive_path. They are left out because they test the name of the upstream helper, not the behaviour."
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 2400
+}

@@ -1,0 +1,64 @@
+{
+  "id": "opencc-1514",
+  "title": "s2twp turns every 程序 into 程式",
+  "repo": "https://github.com/BYVoid/OpenCC",
+  "upstream_pr": "https://github.com/BYVoid/OpenCC/pull/1514",
+  "upstream_status": "merged",
+  "merge_commit": "899c00172008a5f44b94e8f8919572cc67cfcb6d",
+  "base_commit": "9b16591a0d065f5e1121620733721436e83c206f",
+  "language": "data",
+  "category": "locale-terminology",
+  "license": "Apache-2.0",
+  "environment": {
+    "reproduces_on": [
+      "any"
+    ],
+    "locale": null,
+    "tz": null,
+    "toolchain": {
+      "python": ">=3.9",
+      "opencc (PyPI)": "1.4.2, the version of the base commit"
+    },
+    "notes": "No C++ build: tools/opencc_testcases.py builds text dictionaries from the checkout as data/CMakeLists.txt does with OPENCC_DICT_FORMAT=text and runs test/testcases/testcases.json with the PyPI engine. Upstream's C++ dictionary checks (sort order, reverse-mapping completeness) are not run."
+  },
+  "python_venv": true,
+  "setup": [
+    [
+      "{python}",
+      "-m",
+      "pip",
+      "install",
+      "-q",
+      "--disable-pip-version-check",
+      "opencc==1.4.2"
+    ]
+  ],
+  "test_command": [
+    "{python}",
+    "{bench}/tools/opencc_testcases.py",
+    "{workdir}",
+    "--only-prefix",
+    "BYVoid_OpenCC_Issue_1313_chengxu_not_generic_s2twp",
+    "--only-prefix",
+    "BYVoid_OpenCC_Issue_1313_chengxu_tw2sp"
+  ],
+  "regression_command": [
+    "{python}",
+    "{bench}/tools/opencc_testcases.py",
+    "{workdir}",
+    "--skip-prefix",
+    "BYVoid_OpenCC_Issue_1313_chengxu_not_generic_s2twp",
+    "--skip-prefix",
+    "BYVoid_OpenCC_Issue_1313_chengxu_tw2sp"
+  ],
+  "hidden_tests": {
+    "source": "upstream-pr",
+    "tests": [
+      "test/testcases/testcases.json: BYVoid_OpenCC_Issue_1313_chengxu_not_generic_s2twp",
+      "test/testcases/testcases.json: BYVoid_OpenCC_Issue_1313_chengxu_tw2sp"
+    ]
+  },
+  "gold_patch": "gold.patch",
+  "test_patch": "test.patch",
+  "timeout_sec": 900
+}
