@@ -112,7 +112,7 @@ def cmd_evaluate(args) -> None:
         if task is None:
             continue
         patch = patch_dir / f"{task.id}.patch"
-        patch.write_text(pred.get("model_patch") or "", encoding="utf-8", newline="\n")
+        patch.write_bytes((pred.get("model_patch") or "").encode("utf-8"))
         result = runner.run(task, "candidate", patch, work_root=Path(args.work), log_dir=out_dir / "logs")
         result.pop("log_tail")
         result["split"] = task.split
@@ -145,9 +145,10 @@ def cmd_split_diff(args) -> None:
     gold, test = patches.split(text, args.test, args.drop)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "gold.patch").write_text(gold, encoding="utf-8", newline="\n")
+    # Bytes, so that Windows doesn't turn the patches' LF into CRLF.
+    (out / "gold.patch").write_bytes(gold.encode("utf-8"))
     if test:
-        (out / "test.patch").write_text(test, encoding="utf-8", newline="\n")
+        (out / "test.patch").write_bytes(test.encode("utf-8"))
     print(f"gold: {patches.touched_paths(gold)}\ntest: {patches.touched_paths(test)}")
 
 

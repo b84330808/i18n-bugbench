@@ -295,4 +295,4 @@ def _write_record(task: Task, record: dict) -> None:
     records = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
     plat = record["environment"]["platform"]
     records = [r for r in records if r["environment"]["platform"] != plat] + [record]
-    path.write_text(json.dumps(records, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+    path.write_bytes((json.dumps(records, indent=2, ensure_ascii=False) + "\n").encode("utf-8"))

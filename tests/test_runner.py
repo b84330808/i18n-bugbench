@@ -42,7 +42,7 @@ def git(*args, cwd):
 
 
 def write(path: Path, text: str) -> None:
-    path.write_text(text, encoding="utf-8", newline="\n")
+    path.write_bytes(text.encode("utf-8"))  # LF on every OS; write_text(newline=) needs 3.10
 
 
 class RunnerTest(unittest.TestCase):
