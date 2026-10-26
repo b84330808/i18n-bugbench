@@ -29,5 +29,35 @@
       "duration_sec": 19.4
     },
     "note": "Added by hand after reading the logs: purgecss's Jest config finds no tests on Windows (testMatch is built with backslashes, transformIgnorePatterns assume '/'), so the test commands fail in both runs before any test executes. Needs validation on Linux or macOS."
+  },
+  {
+    "date": "2026-10-26",
+    "environment": {
+      "platform": "linux",
+      "os": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "locale_encoding": "UTF-8",
+      "tz": "UTC",
+      "tools": {
+        "python": "Python 3.11.17",
+        "node": "v24.21.0",
+        "cargo": "cargo 1.99.0 (5f94df478 2026-08-27)",
+        "go": "go version go1.27.3 linux/amd64",
+        "git": "git version 2.55.0"
+      }
+    },
+    "ok": true,
+    "reason": "base fails, gold passes",
+    "base": {
+      "status": "unresolved",
+      "test_exit": 1,
+      "regression_exit": 0,
+      "duration_sec": 23.3
+    },
+    "gold": {
+      "status": "resolved",
+      "test_exit": 0,
+      "regression_exit": 0,
+      "duration_sec": 14.4
+    }
   }
 ]

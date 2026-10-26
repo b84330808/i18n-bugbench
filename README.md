@@ -2,7 +2,7 @@
 
 Real internationalization and portability bug fixes from open-source projects, packaged so that an AI coding agent can be asked to reproduce each fix and be checked against the project's own tests.
 
-19 tasks from 15 repositories in Python, TypeScript/JavaScript, Rust, Go and dictionary data. 12 of the fixes are merged upstream and 7 are open pull requests. 18 tasks are validated: the hidden tests fail at the base commit and pass with the reference fix.
+19 tasks from 15 repositories in Python, TypeScript/JavaScript, Rust, Go and dictionary data. 12 of the fixes are merged upstream and 7 are open pull requests. All 19 tasks are validated: the hidden tests fail at the base commit and pass with the reference fix, on Windows 11 (18 tasks), on Linux (9 tasks), or both.
 
 ## Why
 
@@ -39,7 +39,7 @@ These bugs are common, and they are easy to miss in review because the project's
 | `opencc-1512` | [BYVoid/OpenCC#1512](https://github.com/BYVoid/OpenCC/pull/1512) | data | locale-terminology | any | merged | upstream-pr | main |
 | `opencc-1514` | [BYVoid/OpenCC#1514](https://github.com/BYVoid/OpenCC/pull/1514) | data | locale-terminology | any | merged | upstream-pr | main |
 | `pdfkit-1828` | [foliojs/pdfkit#1828](https://github.com/foliojs/pdfkit/pull/1828) | javascript | windows-path | windows | merged | benchmark | main |
-| `purgecss-1505` | [FullHuman/purgecss#1505](https://github.com/FullHuman/purgecss/pull/1505) | typescript | windows-path | any | merged | upstream-pr | unvalidated |
+| `purgecss-1505` | [FullHuman/purgecss#1505](https://github.com/FullHuman/purgecss/pull/1505) | typescript | windows-path | any | merged | upstream-pr | main |
 | `vcrpy-1066` | [kevin1024/vcrpy#1066](https://github.com/kevin1024/vcrpy/pull/1066) | python | url-encoding | any | merged | upstream-pr | main |
 
 "Bug shows on" is where the hidden tests fail at the base commit. Five tasks only fail on Windows; on Linux and macOS their tests already pass before the fix, so a run there says nothing about the agent.
@@ -60,9 +60,9 @@ By language: Python 5, TypeScript 4, JavaScript 1, Rust 3, Go 1, dictionary data
 
 ### Splits
 
-- **main** (11): merged upstream, validated.
+- **main** (12): merged upstream, validated.
 - **pending** (7): the upstream pull request is still open, validated. The fix may still change in review.
-- **unvalidated** (1): not yet validated on any machine. `purgecss-1505` reproduces on every OS, but purgecss's own Jest config can't find or transform its tests on Windows, where the validation ran.
+- **unvalidated** (0): tasks not yet validated anywhere. `purgecss-1505` could only be validated on Linux: purgecss's own Jest config can't find or transform its tests on Windows.
 
 A task counts as validated when [`validation/<task>.json`](validation) has a record in which the hidden tests fail at the base commit, pass with the reference fix, and the regression command (existing tests) passes in both runs. Each record lists the OS, locale encoding, time zone and tool versions.
 
@@ -136,15 +136,18 @@ Candidate patches and the projects' build scripts run arbitrary code on your mac
 
 No agent has been evaluated yet. Template:
 
-| Agent | Date | Platform | main (11) | pending (7) | Windows-only, of those (5) |
+| Agent | Date | Platform | main (12) | pending (7) | Windows-only, of those (5) |
 |---|---|---|---|---|---|
-| _name, version_ | _YYYY-MM-DD_ | _windows / linux_ | _x / 11_ | _x / 7_ | _x / 5_ |
+| _name, version_ | _YYYY-MM-DD_ | _windows / linux_ | _x / 12_ | _x / 7_ | _x / 5_ |
 
-Report the platform: on Linux or macOS only 8 of the 11 main tasks and 5 of the 7 pending tasks can be counted.
+Report the platform: on Linux or macOS only 9 of the 12 main tasks and 5 of the 7 pending tasks can be counted.
 
 ## Validation environment
 
-All 18 validated tasks were validated on one machine: Windows 11 Pro (build 26200), Japanese system locale (code page cp932), time zone Asia/Tokyo, Python 3.11.9, Node.js 24.15.0, Rust 1.99.1 (`x86_64-pc-windows-gnu`), Go 1.27.3, Git 2.51.2.
+- **Windows** (18 tasks, every task except `purgecss-1505`): one machine with Windows 11 Pro (build 26200), Japanese system locale (code page cp932), time zone Asia/Tokyo, Python 3.11.9, Node.js 24.15.0, Rust 1.99.1 (`x86_64-pc-windows-gnu`), Go 1.27.3, Git 2.51.2.
+- **Linux** (9 tasks: `purgecss-1505` and 8 of the tasks marked `any`): GitHub Actions `ubuntu-latest` (UTF-8 locale, UTC), Python 3.11, Node.js 24, Go 1.27, through the [`validate`](.github/workflows/validate.yml) workflow.
+
+macOS has not been used for validation.
 
 Building this on a cp932 machine turned up more bugs of the same kind:
 
@@ -162,7 +165,7 @@ Building this on a cp932 machine turned up more bugs of the same kind:
 - **Hidden tests can be stricter than the bug report.** Where the expected output is a matter of judgment (the OpenCC vocabulary), the problem statement lists the expected conversions.
 - **Windows-only tasks need Windows.** Five tasks only reproduce there, and the code page can't be switched per process on Windows, so the locale-encoding task detects the problem through Python's `EncodingWarning` instead.
 - **Network and drift.** Dependencies are installed from npm, PyPI, crates.io and the Go proxy at run time. Lockfiles pin most of them, but nothing is vendored.
-- **One validation machine.** Tasks marked `any` were validated on Windows only, apart from where `validation/` says otherwise.
+- **Few validation environments.** One Windows machine and GitHub's Linux runner. `fumadocs-3752` and four of the OpenCC tasks are marked `any` but were only validated on Windows; nothing was validated on macOS.
 
 ## License
 

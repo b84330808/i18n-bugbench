@@ -26,5 +26,33 @@
       "test_exit": 0,
       "duration_sec": 12.2
     }
+  },
+  {
+    "date": "2026-10-26",
+    "environment": {
+      "platform": "linux",
+      "os": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "locale_encoding": "UTF-8",
+      "tz": "UTC",
+      "tools": {
+        "python": "Python 3.11.17",
+        "node": "v24.21.0",
+        "cargo": "cargo 1.99.0 (5f94df478 2026-08-27)",
+        "go": "go version go1.27.3 linux/amd64",
+        "git": "git version 2.55.0"
+      }
+    },
+    "ok": true,
+    "reason": "base fails, gold passes",
+    "base": {
+      "status": "unresolved",
+      "test_exit": 1,
+      "duration_sec": 11.6
+    },
+    "gold": {
+      "status": "resolved",
+      "test_exit": 0,
+      "duration_sec": 8.0
+    }
   }
 ]
